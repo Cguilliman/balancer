@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+
+  balancer:
+#    image: czerasz/nginx-geoip2:latest
+    ports:
+      - "80:80"
+    build:
+      context: ./nginx
+    volumes:
+      - ./nginx/balancer.conf:/etc/nginx/nginx.conf
+      - ./GeoLite2-Country.mmdb:/usr/share/GeoIP2/GeoLite2-Country.mmdb
+    depends_on:
+      - node-uk
+      - node-us-1
+      - node-us-2
+      - node-default
+      - node-backup
+
+  node-uk:
+    image: nginx:latest
+    container_name: node-uk
+    volumes:
+      - ./nginx/node.conf:/etc/nginx/nginx.conf
+      - ./nginx/images:/files/images/
+    ports:
+      - "8000:80"
+
+  node-us-1:
+    image: nginx:latest
+    container_name: node-us-1
+    volumes:
+      - ./nginx/node.conf:/etc/nginx/nginx.conf
+      - ./nginx/images:/files/images/
+    ports:
+      - "8001:80"
+
+  node-us-2:
+    image: nginx:latest
+    container_name: node-us-2
+    volumes:
+      - ./nginx/node.conf:/etc/nginx/nginx.conf
+      - ./nginx/images:/files/images/
+    ports:
+      - "8002:80"
+
+  node-default:
+    image: nginx:latest
+    container_name: node-default
+    volumes:
+      - ./nginx/node.conf:/etc/nginx/nginx.conf
+      - ./nginx/images:/files/images/
+    ports:
+      - "8003:80"
+
+  node-backup:
+    image: nginx:latest
+    container_name: node-backup
+    volumes:
+      - ./nginx/node.conf:/etc/nginx/nginx.conf
+      - ./nginx/images:/files/images/
+    ports:
+      - "8004:80"
